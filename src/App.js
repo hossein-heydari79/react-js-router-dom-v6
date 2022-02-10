@@ -1,6 +1,6 @@
 import './App.css';
 import { useState } from "react";
-import { Routes, Route, NavLink, Outlet, useParams, useNavigate, Link, useRoutes, Navigate } from "react-router-dom";
+import { Routes, Route, NavLink, Outlet, useParams, useNavigate, Link, useRoutes, Navigate, useSearchParams, useLocation } from "react-router-dom";
 
 /*======================================================================================================================*/
 
@@ -80,13 +80,16 @@ const ProductList = ({ products }) => {
 
   const navigate = useNavigate();
 
+  const [query, setQuery] = useSearchParams();
 
   return (
 
     <ul style={{ display: "flex", flexDirection: "column", alignItems: "start" }}>
       {
         products.map(item => (
-          <li onClick={() => navigate(`/product/${item.id}`)} key={item.id}>{item.name}</li>
+          <li onClick={() => {
+            navigate(`/product/detail?name=${item.name}`)
+          }} key={item.id}>{item.name}</li>
         ))
       }
     </ul>
@@ -101,18 +104,20 @@ const ProductList = ({ products }) => {
 
 const ProductDetail = ({ products }) => {
 
-  const { id } = useParams();
+  const location = useLocation();
+
+  const query = new URLSearchParams(location.search);
+
+  const name = query.get("name")
 
   const navigate = useNavigate();
 
-
-  const item = products.find(item => +id === item.id);
 
   return (
 
     <>
       <h3>Product Detail</h3>
-      <p>{item.name}</p>
+      <p>{name}</p>
       <button onClick={() => navigate("/product")}>go back</button>
     </>
 
@@ -160,7 +165,7 @@ const CustomRoutes = () => {
           element: <ProductList products={products} />
         },
         {
-          path: ":id",
+          path: "detail",
           element: <ProductDetail products={products} />
         }
       ]
