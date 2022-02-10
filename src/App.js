@@ -104,11 +104,10 @@ const ProductList = ({ products }) => {
 
 const ProductDetail = ({ products }) => {
 
-  const location = useLocation();
 
-  const query = new URLSearchParams(location.search);
+  const [query, setQuery] = useSearchParams();
 
-  const name = query.get("name")
+  const name = query.get("name");
 
   const navigate = useNavigate();
 
