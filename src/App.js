@@ -1,6 +1,6 @@
 import './App.css';
 import { useState } from "react";
-import { Routes, Route, NavLink, Outlet, useParams, useNavigate, Link } from "react-router-dom";
+import { Routes, Route, NavLink, Outlet, useParams, useNavigate, Link, useRoutes, Navigate } from "react-router-dom";
 
 const data = [
   { id: 1, name: "Mouse" },
@@ -15,10 +15,10 @@ const data = [
   { id: 10, name: "Case" },
 ]
 
+
 function App() {
 
-
-  const [products, setProducts] = useState(data);
+  const Custom = CustomRoutes();
 
   return (
     <div className="App">
@@ -29,18 +29,7 @@ function App() {
         <NavLink style={({ isActive }) => isActive ? { color: "blue", fontWeight: "600" } : { color: "black" }} to="/contactus">Contact Us</NavLink>
       </div>
 
-      <Routes>
-
-        <Route path='/' element={<Home />} />
-
-        <Route path='/product' element={<Product />}>
-          <Route index element={<ProductList products={products} />} />
-          <Route path=':id' element={<ProductDetail products={products} />} />
-        </Route>
-
-        <Route path='/contactus' element={<ContactUs />} />
-
-      </Routes>
+      <CustomRoutes />
 
     </div >
   );
@@ -121,5 +110,44 @@ const ContactUs = () => {
     <h1>Contact Us</h1>
 
   )
+
+}
+
+
+const CustomRoutes = () => {
+
+  const [products, setProducts] = useState(data);
+
+
+  const Custom = useRoutes([
+    {
+      path: "/",
+      element: <Home />
+    },
+    {
+      path: "/contactus",
+      element: <ContactUs />
+    },
+    {
+      path: "/product",
+      element: <Product />,
+      children: [
+        {
+          index: true,
+          element: <ProductList products={products} />
+        },
+        {
+          path: ":id",
+          element: <ProductDetail products={products} />
+        }
+      ]
+    },
+    {
+      path: "*",
+      element: <Navigate to="/" />
+    }
+  ])
+
+  return Custom;
 
 }
